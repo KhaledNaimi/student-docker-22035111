@@ -1,0 +1,12 @@
+# Never include these inside the Docker image
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+*.md
+.DS_Store
+*.log

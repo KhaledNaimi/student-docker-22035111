@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Course{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-book me-2 text-danger"></i>{{ action }} Course</h1>
+</div>
+
+<div class="card shadow-sm" style="max-width:640px;">
+  <div class="card-body p-4">
+    <form method="post" novalidate>
+      <div class="row g-3">
+
+        <div class="col-md-4">
+          <label class="form-label">Course Code <span class="text-danger">*</span></label>
+          <input type="text" name="course_code" class="form-control text-uppercase"
+                 value="{{ course.course_code if course else '' }}"
+                 required maxlength="20" placeholder="e.g. CS401" />
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Course Name <span class="text-danger">*</span></label>
+          <input type="text" name="course_name" class="form-control"
+                 value="{{ course.course_name if course else '' }}"
+                 required maxlength="150" />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Credit Hours <span class="text-danger">*</span></label>
+          <input type="number" name="credit_hours" class="form-control"
+                 value="{{ course.credit_hours if course else '3' }}"
+                 required min="1" max="6" />
+        </div>
+        <div class="col-md-9">
+          <label class="form-label">Instructor Name <span class="text-danger">*</span></label>
+          <input type="text" name="instructor_name" class="form-control"
+                 value="{{ course.instructor_name if course else '' }}"
+                 required maxlength="120" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Department <span class="text-danger">*</span></label>
+          <input type="text" name="department" class="form-control"
+                 value="{{ course.department if course else '' }}"
+                 required maxlength="100" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Semester <span class="text-danger">*</span></label>
+          <select name="semester" class="form-select" required>
+            {% for sem in ['Fall','Spring','Summer'] %}
+              <option value="{{ sem }}"
+                {% if course and course.semester == sem %}selected{% endif %}>{{ sem }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Academic Year <span class="text-danger">*</span></label>
+          <input type="number" name="academic_year" class="form-control"
+                 value="{{ course.academic_year if course else '2025' }}"
+                 required min="2000" max="2099" />
+        </div>
+
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-danger">
+          <i class="bi bi-check-lg me-1"></i>{{ action }} Course
+        </button>
+        <a href="{{ url_for('courses_list') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

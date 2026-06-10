@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Courses{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h1><i class="bi bi-book me-2 text-danger"></i>Courses</h1>
+    <p class="text-muted mb-0 small">{{ courses|length }} course(s) total</p>
+  </div>
+  <a href="{{ url_for('courses_add') }}" class="btn btn-danger">
+    <i class="bi bi-plus-lg me-1"></i>Add Course
+  </a>
+</div>
+
+<div class="table-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Code</th><th>Course Name</th><th>Credits</th>
+          <th>Instructor</th><th>Department</th>
+          <th>Semester</th><th>Year</th><th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in courses %}
+        <tr>
+          <td><code class="fw-bold text-dark">{{ c.course_code }}</code></td>
+          <td class="fw-semibold">{{ c.course_name }}</td>
+          <td class="text-center">{{ c.credit_hours }}</td>
+          <td>{{ c.instructor_name }}</td>
+          <td>{{ c.department }}</td>
+          <td>
+            <span class="badge
+              {% if c.semester=='Fall'   %}bg-warning text-dark
+              {% elif c.semester=='Spring'%}bg-success
+              {% else                     %}bg-info text-dark{% endif %}
+              rounded-pill">{{ c.semester }}</span>
+          </td>
+          <td>{{ c.academic_year }}</td>
+          <td class="text-center">
+            <a href="{{ url_for('courses_edit', cid=c.course_id) }}"
+               class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <form method="post" action="{{ url_for('courses_delete', cid=c.course_id) }}"
+                  class="d-inline"
+                  data-confirm="Delete course {{ c.course_code }}? All enrollments in this course will also be removed.">
+              <button class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center text-muted py-5">
+            No courses yet. <a href="{{ url_for('courses_add') }}">Add the first one.</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

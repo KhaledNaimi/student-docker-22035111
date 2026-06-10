@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ student.first_name }}'s Enrollments{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h1><i class="bi bi-journal-check me-2 text-danger"></i>
+      {{ student.first_name }} {{ student.last_name }} — Enrolled Courses
+    </h1>
+    <p class="text-muted mb-0 small">{{ enrollments|length }} course(s)</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('enrollments_add') }}" class="btn btn-danger">
+      <i class="bi bi-plus-lg me-1"></i>Enroll in Course
+    </a>
+    <a href="{{ url_for('students_list') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Course Code</th><th>Course Name</th><th>Credits</th>
+          <th>Grade (%)</th><th>Letter</th><th>Enrolled At</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in enrollments %}
+        <tr>
+          <td><code>{{ e.course_code }}</code></td>
+          <td>{{ e.course_name }}</td>
+          <td class="text-center">{{ e.credit_hours }}</td>
+          <td>{{ '%.2f'|format(e.grade) if e.grade is not none else '—' }}</td>
+          <td>
+            {% if e.letter_grade %}
+              <span class="badge bg-secondary">{{ e.letter_grade }}</span>
+            {% else %}—{% endif %}
+          </td>
+          <td class="small text-muted">{{ e.enrolled_at.strftime('%Y-%m-%d') if e.enrolled_at else '' }}</td>
+          <td>
+            <a href="{{ url_for('enrollments_edit', eid=e.enrollment_id) }}"
+               class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i> Grade
+            </a>
+            <form method="post" action="{{ url_for('enrollments_delete', eid=e.enrollment_id) }}"
+                  class="d-inline"
+                  data-confirm="Drop {{ student.first_name }} from {{ e.course_name }}?">
+              <button class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-x-lg"></i> Drop
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-5">
+            Not enrolled in any courses.
+            <a href="{{ url_for('enrollments_add') }}">Enroll now.</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

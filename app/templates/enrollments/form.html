@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ action }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-journal-plus me-2 text-danger"></i>{{ action }}</h1>
+</div>
+
+<div class="card shadow-sm" style="max-width:480px;">
+  <div class="card-body p-4">
+    <form method="post" novalidate>
+
+      {% if action == 'Enroll' %}
+        {# ── Select student & course ── #}
+        <div class="mb-3">
+          <label class="form-label">Student <span class="text-danger">*</span></label>
+          <select name="student_id" class="form-select" required>
+            <option value="" disabled selected>— choose a student —</option>
+            {% for s in students %}
+              <option value="{{ s.student_id }}">
+                {{ s.first_name }} {{ s.last_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Course <span class="text-danger">*</span></label>
+          <select name="course_id" class="form-select" required>
+            <option value="" disabled selected>— choose a course —</option>
+            {% for c in courses %}
+              <option value="{{ c.course_id }}">
+                {{ c.course_code }} — {{ c.course_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+      {% else %}
+        {# ── Read-only info ── #}
+        <div class="mb-3 p-3 rounded" style="background:#f8f9fa;">
+          <div class="small text-muted mb-1">Student</div>
+          <div class="fw-semibold">{{ enrollment.first_name }} {{ enrollment.last_name }}</div>
+        </div>
+        <div class="mb-3 p-3 rounded" style="background:#f8f9fa;">
+          <div class="small text-muted mb-1">Course</div>
+          <div class="fw-semibold">
+            <code>{{ enrollment.course_code }}</code> — {{ enrollment.course_name }}
+          </div>
+        </div>
+
+        {# ── Grade fields ── #}
+        <div class="mb-3">
+          <label class="form-label">Numeric Grade (%)</label>
+          <input type="number" name="grade" class="form-control"
+                 value="{{ '%.2f'|format(enrollment.grade) if enrollment.grade is not none else '' }}"
+                 min="0" max="100" step="0.01" placeholder="0.00 – 100.00" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Letter Grade</label>
+          <select name="letter_grade" class="form-select">
+            <option value="">— not graded —</option>
+            {% for lg in ['A','B','C','D','F','Incomplete'] %}
+              <option value="{{ lg }}"
+                {% if enrollment.letter_grade == lg %}selected{% endif %}>{{ lg }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      {% endif %}
+
+      <div class="d-flex gap-2 mt-2">
+        <button type="submit" class="btn btn-danger">
+          <i class="bi bi-check-lg me-1"></i>{{ action }}
+        </button>
+        <a href="{{ url_for('enrollments_list') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

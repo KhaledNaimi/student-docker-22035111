@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div>
+    <h1><i class="bi bi-people me-2 text-danger"></i>Students</h1>
+    <p class="text-muted mb-0 small">{{ students|length }} record(s) found</p>
+  </div>
+  <a href="{{ url_for('students_add') }}" class="btn btn-danger">
+    <i class="bi bi-plus-lg me-1"></i>Add Student
+  </a>
+</div>
+
+{# ── Search ────────────────────────────────────────────────── #}
+<form method="get" class="mb-4">
+  <div class="input-group shadow-sm" style="max-width:480px;">
+    <span class="input-group-text bg-white border-end-0">
+      <i class="bi bi-search text-muted"></i>
+    </span>
+    <input type="text" name="q" value="{{ q }}"
+           class="form-control border-start-0"
+           placeholder="Search name, ID, or department…" />
+    <button class="btn btn-dark" type="submit">Search</button>
+    {% if q %}
+      <a href="{{ url_for('students_list') }}" class="btn btn-outline-secondary">Clear</a>
+    {% endif %}
+  </div>
+</form>
+
+{# ── Table ─────────────────────────────────────────────────── #}
+<div class="table-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>National ID</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>GPA</th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td class="text-muted small">{{ s.student_id }}</td>
+          <td class="fw-semibold">{{ s.first_name }} {{ s.last_name }}</td>
+          <td><code class="small">{{ s.national_id }}</code></td>
+          <td class="small text-muted">{{ s.email }}</td>
+          <td>{{ s.department }}</td>
+          <td>
+            <span class="fw-semibold
+              {% if s.gpa >= 3.5 %}text-success
+              {% elif s.gpa >= 2.5 %}text-dark
+              {% else %}text-danger{% endif %}">
+              {{ '%.2f'|format(s.gpa) }}
+            </span>
+          </td>
+          <td>
+            <span class="badge rounded-pill px-3 py-1
+              {% if s.status == 'Active'    %}badge-active
+              {% elif s.status == 'Graduated'%}badge-graduated
+              {% else                        %}badge-suspended{% endif %}">
+              {{ s.status }}
+            </span>
+          </td>
+          <td class="text-center">
+            <a href="{{ url_for('student_enrollments', sid=s.student_id) }}"
+               class="btn btn-sm btn-outline-primary me-1" title="View enrollments">
+              <i class="bi bi-journal-check"></i>
+            </a>
+            <a href="{{ url_for('students_edit', sid=s.student_id) }}"
+               class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <form method="post" action="{{ url_for('students_delete', sid=s.student_id) }}"
+                  class="d-inline"
+                  data-confirm="Delete {{ s.first_name }} {{ s.last_name }} and all their enrollments? This cannot be undone.">
+              <button class="btn btn-sm btn-outline-danger" title="Delete">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center text-muted py-5">
+            {% if q %}No students match "<strong>{{ q }}</strong>".
+            {% else %}No students added yet. <a href="{{ url_for('students_add') }}">Add the first one.</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <div>
+    <h1><i class="bi bi-grid-1x2 me-2 text-danger"></i>Dashboard</h1>
+    <p class="text-muted mb-0 small">Student Data Management System overview</p>
+  </div>
+</div>
+
+{# ── Stat cards ────────────────────────────────────────────── #}
+<div class="row g-4 mb-4">
+
+  <div class="col-sm-4">
+    <div class="card stat-card shadow-sm h-100"
+         style="border-left: 5px solid #c0392b;">
+      <div class="card-body d-flex align-items-center gap-3">
+        <div class="rounded-circle d-flex align-items-center justify-content-center"
+             style="width:56px;height:56px;background:#fdf2f1;">
+          <i class="bi bi-people-fill fs-3 text-danger"></i>
+        </div>
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Total Students</div>
+          <div class="display-6 fw-bold lh-1">{{ student_count }}</div>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent border-0 pb-3 ps-4">
+        <a href="{{ url_for('students_list') }}" class="text-danger small fw-semibold text-decoration-none">
+          View all <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="card stat-card shadow-sm h-100"
+         style="border-left: 5px solid #1a5276;">
+      <div class="card-body d-flex align-items-center gap-3">
+        <div class="rounded-circle d-flex align-items-center justify-content-center"
+             style="width:56px;height:56px;background:#eaf4fb;">
+          <i class="bi bi-book-fill fs-3" style="color:#1a5276"></i>
+        </div>
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Total Courses</div>
+          <div class="display-6 fw-bold lh-1">{{ course_count }}</div>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent border-0 pb-3 ps-4">
+        <a href="{{ url_for('courses_list') }}" class="small fw-semibold text-decoration-none"
+           style="color:#1a5276">
+          View all <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="card stat-card shadow-sm h-100"
+         style="border-left: 5px solid #1e8449;">
+      <div class="card-body d-flex align-items-center gap-3">
+        <div class="rounded-circle d-flex align-items-center justify-content-center"
+             style="width:56px;height:56px;background:#eafaf1;">
+          <i class="bi bi-journal-check fs-3 text-success"></i>
+        </div>
+        <div>
+          <div class="text-muted small text-uppercase fw-semibold">Enrollments</div>
+          <div class="display-6 fw-bold lh-1">{{ enrollment_count }}</div>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent border-0 pb-3 ps-4">
+        <a href="{{ url_for('enrollments_list') }}" class="text-success small fw-semibold text-decoration-none">
+          View all <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{# ── Recent students ───────────────────────────────────────── #}
+<div class="table-card p-0">
+  <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+    <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-danger"></i>Recently Added Students</h5>
+    <a href="{{ url_for('students_add') }}" class="btn btn-sm btn-danger">
+      <i class="bi bi-plus-lg me-1"></i>Add Student
+    </a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Department</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in recent_students %}
+        <tr>
+          <td class="text-muted small">#{{ s.student_id }}</td>
+          <td class="fw-semibold">{{ s.first_name }} {{ s.last_name }}</td>
+          <td>{{ s.department }}</td>
+          <td>
+            <span class="badge
+              {% if s.status == 'Active'    %}badge-active
+              {% elif s.status == 'Graduated'%}badge-graduated
+              {% else                        %}badge-suspended{% endif %}
+              rounded-pill px-3 py-1">
+              {{ s.status }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ url_for('students_edit', sid=s.student_id) }}"
+               class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{{ url_for('student_enrollments', sid=s.student_id) }}"
+               class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-journal-check"></i>
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-muted py-4">No students yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
