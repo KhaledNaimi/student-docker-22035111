@@ -152,3 +152,5 @@ student-docker-YOURID/
 
 Cloud Computing / DevOps Fundamentals — Dr. Mossab Al Hunaity  
 Future Scientists Academy
+
+<!-- Docker setup complete -->
