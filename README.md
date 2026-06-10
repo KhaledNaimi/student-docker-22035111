@@ -50,12 +50,12 @@ Two Docker networks enforce security:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/student-docker-YOURID.git
-cd student-docker-YOURID
+git clone https://github.com/KhaledNaimi/student-docker-22035111
+cd student-docker-22035111
 
 # 2. Set up environment variables
 cp env.example .env
-# Edit .env — change all passwords before running!
+
 
 # 3. Build and start all containers
 docker compose up --build
@@ -86,7 +86,7 @@ docker compose down -v
 
 ```bash
 # Pull the application image
-docker pull YOUR_DOCKERHUB_USERNAME/student-app:latest
+docker pull khalednaimi/student-app:latest
 
 # Then run the full stack using docker-compose.yml
 # (edit docker-compose.yml to use the pulled image instead of build)
